@@ -27,6 +27,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <DocumentationFile>bin\Release\Entitas.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DesperateDevs.Utils, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -68,7 +69,6 @@
     <Compile Include="Entitas\Matcher\MatcherException.cs" />
     <Compile Include="Entitas\Collector\Collector.cs" />
     <Compile Include="Entitas\Collector\CollectorException.cs" />
-    <Compile Include="Entitas\EntitasCache.cs" />
     <Compile Include="Entitas\EntitasResources.cs" />
     <Compile Include="Entitas\Extensions\CollectionExtension.cs" />
     <Compile Include="Entitas\Extensions\PublicMemberInfoEntityExtension.cs" />

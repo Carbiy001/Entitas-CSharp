@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DesperateDevs.Utils;
 
 namespace Entitas {
 
@@ -66,6 +65,9 @@ namespace Entitas {
         /// release it manually at some point.
         public IAERC aerc { get { return _aerc; } }
 
+        readonly List<IComponent> _componentBuffer;
+        readonly List<int> _indexBuffer;
+
         int _creationIndex;
         bool _isEnabled;
 
@@ -79,6 +81,11 @@ namespace Entitas {
         int[] _componentIndicesCache;
         string _toStringCache;
         StringBuilder _toStringBuilder;
+
+        public Entity() {
+            _componentBuffer = new List<IComponent>();
+            _indexBuffer = new List<int>();
+        }
 
         public void Initialize(int creationIndex, int totalComponents, Stack<IComponent>[] componentPools, ContextInfo contextInfo = null, IAERC aerc = null) {
             Reactivate(creationIndex);
@@ -180,7 +187,9 @@ namespace Entitas {
         }
 
         void replaceComponent(int index, IComponent replacement) {
-            _toStringCache = null;
+            // TODO VD PERFORMANCE
+            // _toStringCache = null;
+
             var previousComponent = _components[index];
             if (replacement != previousComponent) {
                 _components[index] = replacement;
@@ -193,6 +202,10 @@ namespace Entitas {
                     }
                 } else {
                     _componentIndicesCache = null;
+
+                    // TODO VD PERFORMANCE
+                    _toStringCache = null;
+
                     if (OnComponentRemoved != null) {
                         OnComponentRemoved(this, index, previousComponent);
                     }
@@ -229,18 +242,15 @@ namespace Entitas {
         /// Returns all added components.
         public IComponent[] GetComponents() {
             if (_componentsCache == null) {
-                var components = EntitasCache.GetIComponentList();
-
                 for (int i = 0; i < _components.Length; i++) {
                     var component = _components[i];
                     if (component != null) {
-                        components.Add(component);
+                        _componentBuffer.Add(component);
                     }
                 }
 
-                _componentsCache = components.ToArray();
-
-                EntitasCache.PushIComponentList(components);
+                _componentsCache = _componentBuffer.ToArray();
+                _componentBuffer.Clear();
             }
 
             return _componentsCache;
@@ -249,17 +259,14 @@ namespace Entitas {
         /// Returns all indices of added components.
         public int[] GetComponentIndices() {
             if (_componentIndicesCache == null) {
-                var indices = EntitasCache.GetIntList();
-
                 for (int i = 0; i < _components.Length; i++) {
                     if (_components[i] != null) {
-                        indices.Add(i);
+                        _indexBuffer.Add(i);
                     }
                 }
 
-                _componentIndicesCache = indices.ToArray();
-
-                EntitasCache.PushIntList(indices);
+                _componentIndicesCache = _indexBuffer.ToArray();
+                _indexBuffer.Clear();
             }
 
             return _componentIndicesCache;
@@ -347,7 +354,9 @@ namespace Entitas {
         /// release it manually at some point.
         public void Retain(object owner) {
             _aerc.Retain(owner);
-            _toStringCache = null;
+
+            // TODO VD PERFORMANCE
+            // _toStringCache = null;
         }
 
         /// Releases the entity. An owner can only release an entity
@@ -358,7 +367,9 @@ namespace Entitas {
         /// release it manually at some point.
         public void Release(object owner) {
             _aerc.Release(owner);
-            _toStringCache = null;
+
+            // TODO VD PERFORMANCE
+            // _toStringCache = null;
 
             if (_aerc.retainCount == 0) {
                 if (OnEntityReleased != null) {
@@ -406,9 +417,12 @@ namespace Entitas {
                 _toStringBuilder
                     .Append("Entity_")
                     .Append(_creationIndex)
-                    .Append("(*")
-                    .Append(retainCount)
-                    .Append(")")
+
+                    // TODO VD PERFORMANCE
+//                    .Append("(*")
+//                    .Append(retainCount)
+//                    .Append(")")
+
                     .Append("(");
 
                 const string separator = ", ";
@@ -417,13 +431,19 @@ namespace Entitas {
                 for (int i = 0; i < components.Length; i++) {
                     var component = components[i];
                     var type = component.GetType();
-                    var implementsToString = type.GetMethod("ToString")
-                        .DeclaringType.ImplementsInterface<IComponent>();
-                    _toStringBuilder.Append(
-                        implementsToString
-                            ? component.ToString()
-                            : type.ToCompilableString().RemoveComponentSuffix()
-                    );
+
+                    // TODO VD PERFORMANCE
+                    _toStringCache = null;
+
+//                    var implementsToString = type.GetMethod("ToString")
+//                        .DeclaringType.ImplementsInterface<IComponent>();
+//                    _toStringBuilder.Append(
+//                        implementsToString
+//                            ? component.ToString()
+//                            : type.ToCompilableString().RemoveComponentSuffix()
+//                    );
+
+                    _toStringBuilder.Append(component.ToString());
 
                     if (i < lastSeparator) {
                         _toStringBuilder.Append(separator);

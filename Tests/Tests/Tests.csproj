@@ -52,6 +52,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fixtures\Systems\MultiTriggeredMultiReactiveSystemSpy.cs" />
     <Compile Include="Fixtures\Systems\TestJobSystem.cs" />
     <Compile Include="Fixtures\TestProperties.cs" />
     <Compile Include="Tests\Entitas.Migration\describe_M0450.cs" />
@@ -73,7 +74,6 @@
     <Compile Include="Fixtures\MyTestContext.cs" />
     <Compile Include="Tests\Entitas\describe_Collector.cs" />
     <Compile Include="Tests\Entitas\describe_Context.cs" />
-    <Compile Include="Tests\Entitas\describe_EntitasCache.cs" />
     <Compile Include="Tests\Entitas\describe_EntitasErrorMessages.cs" />
     <Compile Include="Tests\Entitas\describe_Entity.cs" />
     <Compile Include="Tests\Entitas\describe_EntityIndex.cs" />
